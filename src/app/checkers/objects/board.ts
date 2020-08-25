@@ -26,7 +26,7 @@ export class Board {
     };
 
     if (innerWidth > innerHeight) {
-      state.rowColumnSpacing = innerHeight / (state.rows + 2);
+      state.rowColumnSpacing = (innerHeight - 80) / (state.rows + 2);
       state.rowColumnMargin = (innerWidth - (state.rowColumnSpacing * state.rows)) / 2;
     } else {
       state.rowColumnSpacing = innerWidth / (state.rows + 2);
@@ -86,7 +86,7 @@ export class Board {
 
   setBoxDimensions() {
     if (innerWidth > innerHeight) {
-      this.state.rowColumnSpacing = innerHeight / (this.state.rows + 2);
+      this.state.rowColumnSpacing = (innerHeight - 80) / (this.state.rows + 2);
       this.state.rowColumnMargin = (innerWidth - (this.state.rowColumnSpacing * this.state.rows)) / 2;
     } else {
       this.state.rowColumnSpacing = innerWidth / (this.state.rows + 2);

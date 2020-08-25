@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, ElementRef, ViewChild } from '@angular/core';
-import { Select } from '@ngxs/store';
-import { Observable, Subscription } from 'rxjs';
-import { GeneralGameState } from '../state/general-game-state/general.state';
+// import { Select } from '@ngxs/store';
+// import { Observable, Subscription } from 'rxjs';
+// import { GeneralGameState } from '../state/general-game-state/general.state';
 import { Board } from './objects/board';
 import { Player } from '../shared/player/player';
 import { Checker } from './objects/checker';
@@ -48,7 +48,7 @@ export class CheckersComponent implements OnInit, OnChanges {
     this.board = Board.boardBuilder([this.playerOne, this.playerTwo]);
     this.getCheckerImageData(this.board.state.rowColumnSpacing);
     this.canvas.nativeElement.width = innerWidth;
-    this.canvas.nativeElement.height = innerHeight;
+    this.canvas.nativeElement.height = innerHeight - 80;
     this.run();
   }
 
@@ -82,6 +82,7 @@ export class CheckersComponent implements OnInit, OnChanges {
   }
 
   handleClick(evt: MouseEvent): void {
+
     if (this.isPlaying) {
       const boxIdx = this.board.getBoxIndex(evt.clientX, evt.clientY);
       const box = this.board.getBox(boxIdx);
@@ -98,6 +99,7 @@ export class CheckersComponent implements OnInit, OnChanges {
           }
         } else {
           const hasChecker = box.checkForValidChecker(this.currentPlayer);
+          console.log(evt, hasChecker);
 
           if (hasChecker) {
             this.board.setAvailableMoves(box);
@@ -201,17 +203,17 @@ export class CheckersComponent implements OnInit, OnChanges {
   }
 
   refreshCanvas() {
-    this.ctx.clearRect(0, 0, innerWidth, innerHeight);
+    this.ctx.clearRect(0, 0, innerWidth, innerHeight - 80);
   }
 
   drawPlayerBar() {
     this.ctx.fillStyle = this.currentPlayer.state.color;
-    this.ctx.fillRect(0, 0, innerWidth, innerHeight);
+    this.ctx.fillRect(0, 0, innerWidth, innerHeight - 80);
   }
 
   drawBackground() {
     this.ctx.fillStyle = 'ivory';
-    this.ctx.fillRect(20, 20, innerWidth - 40, innerHeight - 40);
+    this.ctx.fillRect(20, 20, innerWidth - 40, innerHeight - 120);
   }
 
   drawBoard() {
@@ -228,19 +230,20 @@ export class CheckersComponent implements OnInit, OnChanges {
   }
 
   drawChecker(checker: Checker) {
-    const position = checker.state.position;
+
+    const { x, y } = checker.state.position;
     if (checker.state.player.state.id === 0) {
 
       if (checker.state.isKing) {
-        this.ctx.drawImage(this.checkerImgKingPlayerOne, position.x, position.y);
+        this.ctx.drawImage(this.checkerImgKingPlayerOne, x, y);
       } else {
-        this.ctx.drawImage(this.checkerImgPlayerOne, position.x, position.y);
+        this.ctx.drawImage(this.checkerImgPlayerOne, x, y);
       }
     } else {
       if (checker.state.isKing) {
-        this.ctx.drawImage(this.checkerImgKingPlayerTwo, position.x, position.y);
+        this.ctx.drawImage(this.checkerImgKingPlayerTwo, x, y);
       } else {
-        this.ctx.drawImage(this.checkerImgPlayerTwo, position.x, position.y);
+        this.ctx.drawImage(this.checkerImgPlayerTwo, x, y);
       }
     }
   }

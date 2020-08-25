@@ -1,16 +1,16 @@
-import { AppPage } from './app.po';
+import { HomePage } from './home.po';
 import { browser, logging } from 'protractor';
 
 describe('workspace-project App', () => {
-  let page: AppPage;
+  let page: HomePage;
 
   beforeEach(() => {
-    page = new AppPage();
+    page = new HomePage();
   });
 
   it('should display welcome message', () => {
     page.navigateTo();
-    expect(page.getTitleText()).toEqual('game-site app is running!');
+    expect(page.getTitleText()).toEqual('home works!');
   });
 
   afterEach(async () => {

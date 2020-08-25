@@ -1,6 +1,6 @@
 import { State, Action, StateContext, Selector } from '@ngxs/store';
 import { SetCanvas, SetCtx, SetWidthAndHeight } from './actions';
-import { ElementRef } from '@angular/core';
+import { ElementRef, Injectable } from '@angular/core';
 
 export class GeneralGameStateModel {
   canvas: ElementRef<HTMLCanvasElement>;
@@ -14,6 +14,7 @@ export class GeneralGameStateModel {
     ctx: null
   }
 })
+@Injectable()
 export class GeneralGameState {
 
   @Selector()
