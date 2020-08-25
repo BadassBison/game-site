@@ -1,7 +1,4 @@
-import { Component, OnInit, OnChanges, ElementRef, ViewChild } from '@angular/core';
-// import { Select } from '@ngxs/store';
-// import { Observable, Subscription } from 'rxjs';
-// import { GeneralGameState } from '../state/general-game-state/general.state';
+import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { Board } from './objects/board';
 import { Player } from '../shared/player/player';
 import { Checker } from './objects/checker';
@@ -11,73 +8,121 @@ import { Point } from '../shared/interfaces/point';
 
 @Component({
   selector: 'app-checkers',
-  template: '<canvas #canvas (click)="handleClick($event)" (mousemove)="handleMouseMove($event)"></canvas>',
+  templateUrl: 'checkers.component.html',
+  styleUrls: ['checkers.component.scss']
 })
-export class CheckersComponent implements OnInit, OnChanges {
+export class CheckersComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('canvas', { static: true })
+  @ViewChild('checkers', { static: true })
   canvas: ElementRef<HTMLCanvasElement>;
+  canvasPadding: number;
+
+  private colors = {
+    playerOne: 'dodgerblue',
+    playerTwo: 'goldenrod'
+  };
+
   private ctx: CanvasRenderingContext2D;
   private board: Board;
   private playerOne: Player;
   private playerTwo: Player;
   private currentPlayer: Player;
-  private holdingChecker = false;
+  private holdingChecker: boolean;
   private checkerHeld: Checker;
   private halfBoxSize: number;
   private lastBoxClicked: Box;
-  private isPlaying = true;
+  private isPlaying: boolean;
   private checkerImgPlayerOne: HTMLImageElement;
   private checkerImgPlayerTwo: HTMLImageElement;
   private checkerImgKingPlayerOne: HTMLImageElement;
   private checkerImgKingPlayerTwo: HTMLImageElement;
+  private loadedImages: number;
+  private playerBarWidth: number;
 
-  ngOnInit(): void {
-    this.updateGameSize();
+  constructor() {}
+
+  ngOnInit() {
+    this.setProperties();
+    this.setInitialState();
   }
 
-  ngOnChanges() {
-    this.updateGameSize();
+  ngAfterViewInit() {
+    this.getCheckerImageData();
   }
 
-  updateGameSize() {
+  // Does not change from game to game
+  setProperties() {
     this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.playerOne = Player.playerBuilder(1, 'dodgerblue');
-    this.playerTwo = Player.playerBuilder(2, 'goldenrod');
-    this.currentPlayer = this.playerOne;
-    this.board = Board.boardBuilder([this.playerOne, this.playerTwo]);
-    this.getCheckerImageData(this.board.state.rowColumnSpacing);
-    this.canvas.nativeElement.width = innerWidth;
-    this.canvas.nativeElement.height = innerHeight - 80;
-    this.run();
+    this.canvasPadding = 40;
   }
 
-  getCheckerImageData(spacing: number): void {
-    this.halfBoxSize = spacing * .5;
+  // Changes from game to game
+  setInitialState() {
+
+    this.playerOne = Player.playerBuilder(1, this.colors.playerOne);
+    this.playerTwo = Player.playerBuilder(2, this.colors.playerTwo);
+    this.playerBarWidth = 20;
+    this.currentPlayer = this.playerOne;
+    this.holdingChecker = false;
+    this.isPlaying = true;
+    this.board = Board.boardBuilder([this.playerOne, this.playerTwo]);
+    this.halfBoxSize = Board.boxSize * .5;
+  }
+
+  setCanvasDimensions(): void {
+    this.canvas.nativeElement.width = innerWidth;
+    this.canvas.nativeElement.height = innerHeight - this.canvasPadding;
+  }
+
+  async getCheckerImageData(): Promise<void> {
     const x = this.halfBoxSize;
     const y = this.halfBoxSize;
-    const checkerRadius = spacing * 0.48;
+    const checkerRadius = Board.boxSize * 0.46;
 
-    this.refreshCanvas();
-    this.canvas.nativeElement.width = spacing;
-    this.canvas.nativeElement.height = spacing;
+    this.canvas.nativeElement.width = Board.boxSize;
+    this.canvas.nativeElement.height = Board.boxSize;
 
     this.checkerImgPlayerOne = new Image();
-    this.checkerImgPlayerOne.src = this.drawCheckerImage(x, y, checkerRadius, 'dodgerblue', false);
+    this.checkerImgPlayerOne.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerOne, false);
+    this.checkerImgPlayerOne.onload = () => this.loadedImages++;
 
     this.checkerImgPlayerTwo = new Image();
-    this.checkerImgPlayerTwo.src = this.drawCheckerImage(x, y, checkerRadius, 'goldenrod', false);
+    this.checkerImgPlayerTwo.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerTwo, false);
+    this.checkerImgPlayerTwo.onload = () => this.loadedImages++;
 
     this.checkerImgKingPlayerOne = new Image();
-    this.checkerImgKingPlayerOne.src = this.drawCheckerImage(x, y, checkerRadius, 'dodgerblue', true);
+    this.checkerImgKingPlayerOne.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerOne, true);
+    this.checkerImgKingPlayerOne.onload = () => this.loadedImages++;
 
     this.checkerImgKingPlayerTwo = new Image();
-    this.checkerImgKingPlayerTwo.src = this.drawCheckerImage(x, y, checkerRadius, 'goldenrod', true);
+    this.checkerImgKingPlayerTwo.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerTwo, true);
+    this.checkerImgKingPlayerTwo.onload = () => this.loadedImages++;
+
+    this.refreshCanvas();
+
+    await this.loadImages([
+      this.checkerImgPlayerOne,
+      this.checkerImgPlayerTwo,
+      this.checkerImgKingPlayerOne,
+      this.checkerImgKingPlayerTwo
+    ]);
+
+    this.setCanvasDimensions();
+    this.draw();
+  }
+
+  async loadImages(images: HTMLImageElement[]) {
+    return new Promise((resolve, reject) => {
+      for (const img of images) {
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+      }
+    });
   }
 
   getCheckerCenter(x: number, y: number): Point {
     x = x - this.halfBoxSize;
-    y = y - this.halfBoxSize;
+    y = y - 2 * this.halfBoxSize;
     return { x, y };
   }
 
@@ -99,12 +144,11 @@ export class CheckersComponent implements OnInit, OnChanges {
           }
         } else {
           const hasChecker = box.checkForValidChecker(this.currentPlayer);
-          console.log(evt, hasChecker);
 
           if (hasChecker) {
             this.board.setAvailableMoves(box);
-            const hasAvailableMoves = this.board.state.availableMoves.length > 0;
 
+            const hasAvailableMoves = this.board.state.availableMoves.length > 0;
             if (hasAvailableMoves) { this.pickUpChecker(box); }
           }
           this.lastBoxClicked = box;
@@ -130,7 +174,7 @@ export class CheckersComponent implements OnInit, OnChanges {
 
   placeChecker(move: Move) {
     const player = this.currentPlayer.state.id;
-    const row = move.end.state.index.row;
+    const row = move.end.state.position.cell.row;
     move.end.addChecker(this.checkerHeld);
 
     let additionalJumps: boolean;
@@ -150,10 +194,6 @@ export class CheckersComponent implements OnInit, OnChanges {
         this.board.checkIfKinged(player, row, this.checkerHeld);
       }
 
-      const { x, y } = move.end.state.center;
-      const checkerPosition = this.getCheckerCenter(x, y);
-      this.checkerHeld.updatePosition(checkerPosition);
-
       const isWin = this.board.checkForWin(this.currentPlayer.state.id);
 
       if (isWin) {
@@ -169,7 +209,7 @@ export class CheckersComponent implements OnInit, OnChanges {
   }
 
   returnChecker() {
-    const { x, y } = this.lastBoxClicked.state.center;
+    const { x, y } = this.lastBoxClicked.state.absoluteCenter;
     const checkerPosition = this.getCheckerCenter(x, y);
     this.checkerHeld.updatePosition(checkerPosition);
     this.lastBoxClicked.addChecker(this.checkerHeld);
@@ -186,15 +226,12 @@ export class CheckersComponent implements OnInit, OnChanges {
     }
   }
 
-  run(): void {
-    this.draw();
-  }
-
   draw(): void {
     this.refreshCanvas();
     this.drawPlayerBar();
     this.drawBackground();
     this.drawBoard();
+
     if (this.board.state.availableMoves.length > 0) {
       this.drawHighlightedSpace();
       this.drawAvailableMoves();
@@ -203,17 +240,23 @@ export class CheckersComponent implements OnInit, OnChanges {
   }
 
   refreshCanvas() {
-    this.ctx.clearRect(0, 0, innerWidth, innerHeight - 80);
+    this.ctx.clearRect(0, 0, innerWidth, innerHeight - (2 * this.canvasPadding));
   }
 
   drawPlayerBar() {
     this.ctx.fillStyle = this.currentPlayer.state.color;
-    this.ctx.fillRect(0, 0, innerWidth, innerHeight - 80);
+    this.ctx.fillRect(0, 0, innerWidth, innerHeight - (this.canvasPadding));
   }
 
   drawBackground() {
+    const stroke = this.playerBarWidth;
+    const x = stroke;
+    const y = stroke;
+    const w = this.canvas.nativeElement.width - (2 * stroke);
+    const h = this.canvas.nativeElement.height - (2 * stroke);
+
     this.ctx.fillStyle = 'ivory';
-    this.ctx.fillRect(20, 20, innerWidth - 40, innerHeight - 120);
+    this.ctx.fillRect(x, y, w, h);
   }
 
   drawBoard() {
@@ -231,7 +274,8 @@ export class CheckersComponent implements OnInit, OnChanges {
 
   drawChecker(checker: Checker) {
 
-    const { x, y } = checker.state.position;
+    const { x, y } = checker.state.position.point;
+
     if (checker.state.player.state.id === 0) {
 
       if (checker.state.isKing) {
@@ -250,13 +294,17 @@ export class CheckersComponent implements OnInit, OnChanges {
 
   drawBox(box: Box) {
     const { color, width, height } = box.state;
-    const { x, y } = box.state.position;
+    const { x, y } = box.state.position.point;
     this.ctx.fillStyle = color;
     this.ctx.fillRect(x, y, width, height);
+
+    this.ctx.lineWidth = 0.5;
+    this.ctx.strokeStyle = 'black';
+    this.ctx.strokeRect(x, y, width, height);
   }
 
   drawCheckerImage(x: number, y: number, radius: number, color: string, isKing: boolean) {
-    const color2 = color === 'dodgerblue' ? 'deepskyblue' : 'gold';
+    const color2 = color === this.colors.playerOne ? 'deepskyblue' : 'gold';
 
     // Outer Circle
     this.ctx.fillStyle = color;
@@ -266,7 +314,8 @@ export class CheckersComponent implements OnInit, OnChanges {
 
     // Outer Grooves
     this.ctx.strokeStyle = color2;
-    this.ctx.lineWidth = 6;
+    this.ctx.lineWidth = Board.boxSize * .05;
+
     for (let i = 0; i < 2 * Math.PI; i += 0.18) {
       this.ctx.beginPath();
       this.ctx.arc(x, y, radius - 4, i, i + 0.04, false);
@@ -282,25 +331,26 @@ export class CheckersComponent implements OnInit, OnChanges {
     // Inner Crown
     if (isKing) {
       this.ctx.strokeStyle = color;
-      this.ctx.lineWidth = 4;
+      this.ctx.lineWidth = Board.boxSize * .05;
+      const dif = Board.boxSize / 95;
       this.ctx.beginPath();
-      this.ctx.moveTo(x + 16, y + 15);
-      this.ctx.lineTo(x - 15, y + 15);
-      this.ctx.lineTo(x - 20, y - 10);
-      this.ctx.lineTo(x - 10, y);
-      this.ctx.lineTo(x, y - 20);
-      this.ctx.lineTo(x + 10, y);
-      this.ctx.lineTo(x + 20, y - 10);
-      this.ctx.lineTo(x + 15, y + 15);
+      this.ctx.moveTo(x + 16 * dif, y + 15 * dif);
+      this.ctx.lineTo(x - 15 * dif, y + 15 * dif);
+      this.ctx.lineTo(x - 20 * dif, y - 10 * dif);
+      this.ctx.lineTo(x - 10 * dif, y           );
+      this.ctx.lineTo(x,            y - 20 * dif);
+      this.ctx.lineTo(x + 10 * dif, y           );
+      this.ctx.lineTo(x + 20 * dif, y - 10 * dif);
+      this.ctx.lineTo(x + 15 * dif, y + 15 * dif);
     }
 
     this.ctx.stroke();
 
-    return this.canvas.nativeElement.toDataURL() as string;
+    return this.canvas.nativeElement.toDataURL('image/webp') as string;
   }
 
   drawHighlightedSpace() {
-    const { x, y } = this.lastBoxClicked.state.position;
+    const { x, y } = this.lastBoxClicked.state.position.point;
     const { width, height } = this.lastBoxClicked.state;
 
     this.ctx.fillStyle = 'white';
@@ -311,7 +361,7 @@ export class CheckersComponent implements OnInit, OnChanges {
     this.ctx.lineWidth = 6;
 
     this.board.state.availableMoves.forEach((move: Move) => {
-      const { x, y } = move.end.state.position;
+      const { x, y } = move.end.state.position.point;
       const { width, height } = move.end.state;
 
       this.ctx.strokeStyle = 'yellow';

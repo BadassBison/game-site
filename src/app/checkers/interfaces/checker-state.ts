@@ -1,10 +1,12 @@
 import { Player } from 'src/app/shared/player/player';
+import { IPosition } from 'src/app/shared/interfaces/position';
 import { Point } from 'src/app/shared/interfaces/point';
 
 export interface CheckerState {
   color: string;
   radius: number;
   player: Player;
-  position: Point;
+  position: IPosition;
   isKing: boolean;
+  center: Point;
 }

@@ -8,13 +8,10 @@ import {ChangeDetectorRef, Component} from '@angular/core';
 })
 export class AppComponent {
   title = 'game-site';
-  mobileQuery: MediaQueryList;
 
-  private mobileQueryListener: () => void;
+  constructor() {}
 
-  constructor(changeDetectorRef: ChangeDetectorRef, media: MediaMatcher) {
-    // this.mobileQuery = media.matchMedia('(max-width: 600px)');
-    // this.mobileQueryListener = () => changeDetectorRef.detectChanges();
-    // this.mobileQuery.addListener(this.mobileQueryListener);
+  log(evt: any) {
+    console.log({ evt });
   }
 }

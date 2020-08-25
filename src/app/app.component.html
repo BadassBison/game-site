@@ -1,23 +1,26 @@
-<div class="app-container" [class.is-mobile]="mobileQuery.matches">
+<div class="app-container">
 
-  <mat-toolbar class="toolbar">
-    <!-- <button mat-icon-button (click)="sidenav.toggle()">
-      <mat-icon aria-hidden="false" aria-label="menu icon">home</mat-icon>
-    </button> -->
-    <h1 class="app-name">Game Site</h1>
+  <mat-toolbar color="primary">
+
+    <span>Game Site</span>
+    <span class="spacer"></span>
+
+    <button mat-icon-button aria-label="menu icon" [matMenuTriggerFor]="menu">
+      <mat-icon>menu</mat-icon>
+    </button>
+
+    <mat-menu #menu="matMenu">
+        <a routerLink='/home' mat-menu-item>
+          <mat-icon>home</mat-icon>
+          <span>Home</span>
+        </a>
+        <a routerLink='/checkers' mat-menu-item>
+          <mat-icon>fiber_manual_record</mat-icon>
+          <span>Checkers</span>
+        </a>
+    </mat-menu>
+
   </mat-toolbar>
 
-  <!-- <mat-sidenav-container class="sidenav-container">
-    <mat-sidenav #sidenav>
-      <mat-nav-list>
-        <a mat-list-item routerLink="checkers">Checkers</a>
-      </mat-nav-list>
-    </mat-sidenav>
-
-    <mat-sidenav-content>
-      <router-outlet></router-outlet>
-    </mat-sidenav-content>
-
-  </mat-sidenav-container> -->
   <router-outlet></router-outlet>
 </div>

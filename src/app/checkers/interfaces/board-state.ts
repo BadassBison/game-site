@@ -5,8 +5,8 @@ export interface BoardState {
   rows: number;
   columns: number;
   boxes: Map<string, Box>;
-  rowColumnMargin: number;
-  rowColumnSpacing: number;
+  topPadding: number;
+  sidePadding: number;
   playerOneCheckersRemaining: number;
   playerTwoCheckersRemaining: number;
   availableMoves: Move[];

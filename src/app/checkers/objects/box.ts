@@ -1,27 +1,29 @@
 import { BoxState } from '../interfaces/box-state';
-import { UtilitiesService } from 'src/app/shared/utilities/utilities.service';
-import { Cell } from 'src/app/shared/interfaces/cell';
-import { Point } from 'src/app/shared/interfaces/point';
 import { Checker } from './checker';
 import { Player } from 'src/app/shared/player/player';
+import { IPosition } from 'src/app/shared/interfaces/position';
+import { UtilitiesService } from 'src/app/shared/utilities/utilities.service';
 
 export class Box {
-  static colors: string[] = ['palegreen', 'darkgray'];
+  static colors = {
+    playable: 'palegreen',
+    unPlayable: 'darkgray'
+  };
   static readonly empty: string = 'empty';
   static readonly unplayableSpace: string = 'unplayable space';
 
   state: BoxState;
 
-  static boxBuilder(isOdd: boolean, index: Cell, position: Point, side: number): Box {
+  static boxBuilder(isOdd: boolean, position: IPosition, side: number): Box {
     const state: BoxState = {
-      id: `${index.row}${index.column}`,
-      color: isOdd ? Box.colors[0] : Box.colors[1],
+      id: `${position.cell.row}${position.cell.column}`,
+      color: isOdd ? Box.colors.playable : Box.colors.unPlayable,
       checker: isOdd ? Box.empty : Box.unplayableSpace,
-      index,
       position,
       width: side,
       height: side,
-      center: UtilitiesService.findCenterPointOfRectangle(position, side, side)
+      absoluteCenter: UtilitiesService.findAbsoluteCenterPointOfRectangle(position, side, side),
+      relativeCenter: UtilitiesService.findRelativeCenterPointOfRectangle(side, side)
     };
     return new Box(state);
   }
@@ -31,7 +33,8 @@ export class Box {
   }
 
   buildChecker(player: Player) {
-    this.state.checker = Checker.checkerBuilder(player, this.state.position, Math.floor(this.state.width * .46));
+    const { cell, point } = this.state.position;
+    this.state.checker = Checker.checkerBuilder(player, { cell, point }, Math.floor(this.state.width * .46));
   }
 
   hasChecker(): boolean {
@@ -39,6 +42,8 @@ export class Box {
   }
 
   addChecker(checker: Checker): void {
+    checker.state.position.cell = this.state.position.cell;
+    checker.state.position.point = this.state.position.point;
     this.state.checker = checker;
   }
 

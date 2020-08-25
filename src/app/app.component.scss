@@ -8,14 +8,15 @@
   right: 0;
 }
 
-.toolbar {
-  background-color: rgb(40, 223, 255);
-  -webkit-box-shadow: 3px 3px 5px 6px #ccc;
-  -moz-box-shadow:    3px 3px 5px 6px #ccc;
-  box-shadow:         3px 3px 5px 6px #ccc;
+.spacer {
+  flex: 1 1 auto;
 }
 
 h1.app-name {
   margin-left: 8px;
   color: white;
+}
+
+app-checkers {
+  overflow: hidden;
 }

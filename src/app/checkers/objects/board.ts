@@ -1,37 +1,37 @@
-import { Player } from 'src/app/shared/player/player';
+import { BoardState } from '../interfaces/board-state';
 import { Box } from './box';
 import { Move } from '../interfaces/move';
-import { UtilitiesService } from 'src/app/shared/utilities/utilities.service';
+import { Player } from 'src/app/shared/player/player';
 import { Cell } from 'src/app/shared/interfaces/cell';
 import { Point } from 'src/app/shared/interfaces/point';
-import { BoardState } from '../interfaces/board-state';
+import { IPosition } from 'src/app/shared/interfaces/position';
+
 import { Checker } from './checker';
+
+import { UtilitiesService } from 'src/app/shared/utilities/utilities.service';
 
 export class Board {
   static rows = 8;
   static columns = 8;
+  static boxSize: number;
 
   state: BoardState;
 
   static boardBuilder(players: Player[]): Board {
+    Board.boxSize = Board.calculateBoxSize();
+    const topPadding = Board.calculateTopPadding();
+    const sidePadding = Board.calculateSidePadding();
+
     const state: BoardState = {
       rows: Board.rows,
       columns: Board.columns,
       boxes: new Map<string, Box>(),
-      rowColumnMargin: null,
-      rowColumnSpacing: null,
+      topPadding,
+      sidePadding,
       playerOneCheckersRemaining: 12,
       playerTwoCheckersRemaining: 12,
       availableMoves: [],
     };
-
-    if (innerWidth > innerHeight) {
-      state.rowColumnSpacing = (innerHeight - 80) / (state.rows + 2);
-      state.rowColumnMargin = (innerWidth - (state.rowColumnSpacing * state.rows)) / 2;
-    } else {
-      state.rowColumnSpacing = innerWidth / (state.rows + 2);
-      state.rowColumnMargin = state.rowColumnSpacing;
-    }
 
     const playerOne: Player = players[0];
     const playerTwo: Player = players[1];
@@ -39,9 +39,10 @@ export class Board {
     for (let row = 0; row < state.rows; row++){
       for (let column = 0; column < state.columns; column++) {
         const isOdd: boolean = UtilitiesService.isOdd(row + column);
-        const boxIdx: Cell = { row, column };
-        const boxPosition: Point = Board.calculateBoxPositions(boxIdx, state.rowColumnSpacing, state.rowColumnMargin);
-        const box = Box.boxBuilder(isOdd, boxIdx, boxPosition, state.rowColumnSpacing);
+        const boxCell: Cell = { row, column };
+        const boxPoint: Point = Board.calculateBoxPositions(boxCell, state.topPadding, state.sidePadding);
+        const boxPosition: IPosition = { cell: boxCell, point: boxPoint };
+        const box: Box = Box.boxBuilder(isOdd, boxPosition, Board.boxSize);
 
         if (isOdd) {
           if (row < 3) {
@@ -56,42 +57,56 @@ export class Board {
     return new Board(state);
   }
 
-  static calculateBoxPositions(index: Cell, spacing: number, margin: number): Point {
-    // const x1 = (Board.columns - index.column) * spacing + margin;
-    // const y1 = (Board.rows - index.row) * spacing + margin;
-    const x = index.column * spacing + margin;
-    const y = index.row * spacing + spacing;
+  static calculateBoxPositions(index: Cell, topPadding: number, sidePadding: number): Point {
+    const x = index.column * Board.boxSize + sidePadding;
+    const y = index.row * Board.boxSize + topPadding;
     return { x, y };
+  }
+
+  static calculateBoxSize(): number {
+    if (innerWidth > innerHeight) {
+      return (innerHeight) / (Board.rows + 2);
+    } else {
+      return (innerWidth) / (Board.rows + 2);
+    }
+  }
+
+  static calculateTopPadding(): number {
+    if (innerWidth > innerHeight) {
+      return Board.boxSize;
+    } else {
+      const boardSize = Board.boxSize * 8;
+      return (innerHeight - boardSize) / 2;
+    }
+  }
+
+  static calculateSidePadding(): number {
+    if (innerWidth > innerHeight) {
+      const boardSize = Board.boxSize * 8;
+      return (innerWidth - boardSize) / 2;
+    } else {
+      return Board.boxSize;
+    }
   }
 
   constructor(state: BoardState) {
     this.state = state;
   }
 
-  setupBoardState(players: Player[]) {
+  setupBoardState(players: Player[]): void {
     this.state = {
       rows: 8,
       columns: 8,
       boxes: new Map<string, Box>(),
-      rowColumnMargin: null,
-      rowColumnSpacing: null,
+      topPadding: null,
+      sidePadding: null,
       playerOneCheckersRemaining: 12,
       playerTwoCheckersRemaining: 12,
       availableMoves: null,
     };
-    this.setBoxDimensions();
+
     this.buildBoard(players);
     this.state.availableMoves = [];
-  }
-
-  setBoxDimensions() {
-    if (innerWidth > innerHeight) {
-      this.state.rowColumnSpacing = (innerHeight - 80) / (this.state.rows + 2);
-      this.state.rowColumnMargin = (innerWidth - (this.state.rowColumnSpacing * this.state.rows)) / 2;
-    } else {
-      this.state.rowColumnSpacing = innerWidth / (this.state.rows + 2);
-      this.state.rowColumnMargin = this.state.rowColumnSpacing;
-    }
   }
 
   buildBoard(players: Player[]) {
@@ -102,9 +117,10 @@ export class Board {
     for (let row = 0; row < this.state.rows; row++){
       for (let column = 0; column < this.state.columns; column++) {
         const isOdd: boolean = UtilitiesService.isOdd(row + column);
-        const boxIdx: Cell = { row, column };
-        const boxPosition: Point = this.getBoxPosition(row, column);
-        const box = Box.boxBuilder(isOdd, boxIdx, boxPosition, this.state.rowColumnSpacing);
+        const boxCell: Cell = { row, column };
+        const boxPoint: Point = this.getBoxPosition(row, column);
+        const boxPosition: IPosition = { cell: boxCell, point: boxPoint };
+        const box = Box.boxBuilder(isOdd, boxPosition, Board.boxSize);
 
         if (isOdd) {
           if (row < 3) {
@@ -138,14 +154,14 @@ export class Board {
   }
 
   getBoxPosition(row: number, column: number): Point {
-    const x = column * this.state.rowColumnSpacing + this.state.rowColumnMargin;
-    const y = row * this.state.rowColumnSpacing + this.state.rowColumnSpacing;
+    const x = column * Board.boxSize + this.state.sidePadding;
+    const y = row * Board.boxSize + Board.boxSize;
     return { x, y };
   }
 
   getBoxIndex(x: number, y: number): Cell {
-    const row = Math.floor((y - this.state.rowColumnSpacing) / this.state.rowColumnSpacing);
-    const column = Math.floor((x - this.state.rowColumnMargin) / this.state.rowColumnSpacing);
+    const row = Math.floor((y - this.state.topPadding - 40) / Board.boxSize);
+    const column = Math.floor((x - this.state.sidePadding) / Board.boxSize);
     return { row, column };
   }
 
@@ -166,21 +182,21 @@ export class Board {
   getAllMoves(box: Box): Box[] {
     const { isKing, player } = (box.state.checker as Checker).state;
     const moves: Box[] = [];
-    const { row, column } = box.state.index;
+    const { row, column } = box.state.position.cell;
 
     if (player.state.id === 1 || isKing) {
-      if (box.state.index.row > 0 && box.state.index.column > 0) {
+      if (row > 0 && column > 0) {
         moves.push(this.state.boxes.get(`${row - 1}${column -  1}`));
       }
-      if (box.state.index.row > 0 && box.state.index.column < this.state.columns - 1) {
+      if (row > 0 && column < this.state.columns - 1) {
         moves.push(this.state.boxes.get(`${row - 1}${column + 1}`));
       }
     }
     if (player.state.id === 0 || isKing) {
-      if (box.state.index.row < this.state.rows - 1 && box.state.index.column > 0) {
+      if (row < this.state.rows - 1 && column > 0) {
         moves.push(this.state.boxes.get(`${row + 1}${column - 1}`));
       }
-      if (box.state.index.row < this.state.rows - 1 && box.state.index.column < this.state.columns - 1) {
+      if (row < this.state.rows - 1 && column < this.state.columns - 1) {
         moves.push(this.state.boxes.get(`${row + 1}${column + 1}`));
       }
     }
@@ -190,7 +206,8 @@ export class Board {
 
   getAvailableMove(box: Box): Move {
     const idx = this.state.availableMoves.findIndex((move: Move) => {
-      return move.end.state.index === box.state.index;
+      // FIXME: does this check object equality
+      return move.end.state.position.cell === box.state.position.cell;
     });
     return this.state.availableMoves[idx];
   }
@@ -211,10 +228,10 @@ export class Board {
         const isOpponentChecker: boolean = this.checkIfOpponentChecker(move, player.state.id);
 
         if (isOpponentChecker) {
-          const isJumpPossible: boolean = this.checkIfJumpIsPossible(startBox.state.index, move.state.index);
+          const isJumpPossible: boolean = this.checkIfJumpIsPossible(startBox.state.position.cell, move.state.position.cell);
 
           if (isJumpPossible) {
-            const jumpIdx: Cell = this.getJumpPosition(startBox.state.index, move.state.index);
+            const jumpIdx: Cell = this.getJumpPosition(startBox.state.position.cell, move.state.position.cell);
             const endBox = this.state.boxes.get(`${jumpIdx.row}${jumpIdx.column}`);
             const jumpMove: Move = { start: startBox, end: endBox, isJump: true, jumpedBox: move };
             jumpMoves.push(jumpMove);
