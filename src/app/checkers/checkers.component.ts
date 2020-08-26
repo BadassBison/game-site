@@ -5,11 +5,22 @@ import { Checker } from './objects/checker';
 import { Box } from './objects/box';
 import { Move } from './interfaces/move';
 import { Point } from '../shared/interfaces/point';
+import { trigger, state, style, transition, animate } from '@angular/animations';
+import { IPosition } from '../shared/interfaces/position';
 
 @Component({
   selector: 'app-checkers',
   templateUrl: 'checkers.component.html',
-  styleUrls: ['checkers.component.scss']
+  styleUrls: ['checkers.component.scss'],
+  animations: [
+    trigger('rotationTrigger', [
+      state('rotated', style({ transform: 'rotate(180deg)' })),
+      state('notRotated', style({ transform: 'rotate(0deg)'})),
+      transition('notRotated => rotated', [
+        animate('2s 50ms ease-in-out')
+      ])
+    ])
+  ]
 })
 export class CheckersComponent implements OnInit, AfterViewInit {
 
@@ -37,6 +48,7 @@ export class CheckersComponent implements OnInit, AfterViewInit {
   private checkerImgKingPlayerOne: HTMLImageElement;
   private checkerImgKingPlayerTwo: HTMLImageElement;
   private playerBarWidth: number;
+  canvasRotated: boolean;
 
   constructor() {}
 
@@ -66,6 +78,7 @@ export class CheckersComponent implements OnInit, AfterViewInit {
     this.isPlaying = true;
     this.board = Board.boardBuilder([this.playerOne, this.playerTwo]);
     this.halfBoxSize = Board.boxSize * .5;
+    this.canvasRotated = false;
   }
 
   setCanvasDimensions(): void {
@@ -144,6 +157,7 @@ export class CheckersComponent implements OnInit, AfterViewInit {
             this.board.setAvailableMoves(box);
 
             const hasAvailableMoves = this.board.state.availableMoves.length > 0;
+
             if (hasAvailableMoves) { this.pickUpChecker(box); }
           }
           this.lastBoxClicked = box;
@@ -213,12 +227,51 @@ export class CheckersComponent implements OnInit, AfterViewInit {
     this.checkerHeld = null;
   }
 
+  // TODO:
   changePlayer(): void {
+    this.rotateBoard();
+
     if (this.currentPlayer.state.id === 0) {
       this.currentPlayer = this.playerTwo;
     } else {
       this.currentPlayer = this.playerOne;
     }
+  }
+
+  changeCheckerPositions(): void {
+    const complementValue = Board.rows - 1;
+    for (let row = 0; row < Board.rows / 2; row++) {
+      for (let column = 0; column < Board.columns; column++) {
+        const currentBox = this.board.state.boxes.get(`${row}${column}`);
+        if (currentBox.state.checker === Box.unplayableSpace) { continue; }
+
+        let currentChecker: Checker;
+        if (currentBox.hasChecker()) {
+          currentChecker = currentBox.state.checker as Checker;
+          currentBox.removeChecker();
+        }
+
+        const complementBox = this.board.state.boxes.get(`${complementValue - row}${complementValue - column}`);
+        let complementChecker: Checker;
+        if (complementBox.hasChecker()) {
+          complementChecker = complementBox.state.checker as Checker;
+          complementBox.removeChecker();
+        }
+
+        if (complementChecker) { currentBox.addChecker(complementChecker); }
+        if (currentChecker) { complementBox.addChecker(currentChecker); }
+      }
+    }
+  }
+
+  rotateBoard(): void {
+    this.canvasRotated = true;
+
+    setTimeout(() => {
+      this.changeCheckerPositions();
+      this.canvasRotated = false;
+      this.draw();
+    }, 2000);
   }
 
   draw(): void {
