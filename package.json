@@ -9,7 +9,7 @@
     "start:open": "ng serve --open",
     "start:4201": "npm start -- --port=4201",
     "build": "ng build",
-    "build:production": "npm run clean && ng build --prod --baseHref=\"https://badassbison.github.io/game-site/\"",
+    "build:production": "npm run clean && ng build --prod --baseHref=https://badassbison.github.io/game-site/",
     "build:stats": "ng build --stats-json && webpack-bundle-analyzer dist/game-site/stats-es2015.json",
     "test": "ng test --watch=false",
     "lint": "ng lint",
