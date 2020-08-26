@@ -36,7 +36,6 @@ export class CheckersComponent implements OnInit, AfterViewInit {
   private checkerImgPlayerTwo: HTMLImageElement;
   private checkerImgKingPlayerOne: HTMLImageElement;
   private checkerImgKingPlayerTwo: HTMLImageElement;
-  private loadedImages: number;
   private playerBarWidth: number;
 
   constructor() {}
@@ -84,19 +83,15 @@ export class CheckersComponent implements OnInit, AfterViewInit {
 
     this.checkerImgPlayerOne = new Image();
     this.checkerImgPlayerOne.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerOne, false);
-    this.checkerImgPlayerOne.onload = () => this.loadedImages++;
 
     this.checkerImgPlayerTwo = new Image();
     this.checkerImgPlayerTwo.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerTwo, false);
-    this.checkerImgPlayerTwo.onload = () => this.loadedImages++;
 
     this.checkerImgKingPlayerOne = new Image();
     this.checkerImgKingPlayerOne.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerOne, true);
-    this.checkerImgKingPlayerOne.onload = () => this.loadedImages++;
 
     this.checkerImgKingPlayerTwo = new Image();
     this.checkerImgKingPlayerTwo.src = this.drawCheckerImage(x, y, checkerRadius, this.colors.playerTwo, true);
-    this.checkerImgKingPlayerTwo.onload = () => this.loadedImages++;
 
     this.refreshCanvas();
 
