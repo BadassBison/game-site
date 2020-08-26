@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { CheckersRoutingModule } from './checkers-routing.module';
 
+import { MatButtonModule } from '@angular/material/button';
+
 import { CheckersComponent } from './checkers.component';
 
 @NgModule({
@@ -10,7 +12,8 @@ import { CheckersComponent } from './checkers.component';
   ],
   imports: [
     SharedModule,
-    CheckersRoutingModule
+    CheckersRoutingModule,
+    MatButtonModule
   ],
   exports: [
     CheckersComponent

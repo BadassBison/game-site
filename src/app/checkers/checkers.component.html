@@ -1,2 +1,7 @@
-<canvas #checkers class="canvas" (click)="handleClick($event)" (mousemove)="handleMouseMove($event)"></canvas>
-<!-- <button>Rotate</button> -->
+<canvas
+  #checkers
+  [@rotationTrigger]="canvasRotated ? 'rotated' : 'notRotated'"
+  class="canvas"
+  (click)="handleClick($event)"
+  (mousemove)="handleMouseMove($event)">
+</canvas>
