@@ -46,9 +46,9 @@ export class Board {
 
         if (isOdd) {
           if (row < 3) {
-            box.buildChecker(playerOne);
-          } else if (row > 4) {
             box.buildChecker(playerTwo);
+          } else if (row > 4) {
+            box.buildChecker(playerOne);
           }
         }
         state.boxes.set(`${row}${column}`, box);
@@ -65,18 +65,18 @@ export class Board {
 
   static calculateBoxSize(): number {
     if (innerWidth > innerHeight) {
-      return (innerHeight) / (Board.rows + 2);
+      return innerHeight / (Board.rows + 2);
     } else {
-      return (innerWidth) / (Board.rows + 2);
+      return innerWidth / (Board.rows + 2);
     }
   }
 
   static calculateTopPadding(): number {
     if (innerWidth > innerHeight) {
-      return Board.boxSize;
+      return Board.boxSize - 20;
     } else {
       const boardSize = Board.boxSize * 8;
-      return (innerHeight - boardSize) / 2;
+      return (innerHeight - boardSize) / 2 - 20;
     }
   }
 
@@ -155,7 +155,7 @@ export class Board {
 
   getBoxPosition(row: number, column: number): Point {
     const x = column * Board.boxSize + this.state.sidePadding;
-    const y = row * Board.boxSize + Board.boxSize;
+    const y = row * Board.boxSize + this.state.topPadding;
     return { x, y };
   }
 
@@ -184,15 +184,14 @@ export class Board {
     const moves: Box[] = [];
     const { row, column } = box.state.position.cell;
 
-    if (player.state.id === 1 || isKing) {
-      if (row > 0 && column > 0) {
-        moves.push(this.state.boxes.get(`${row - 1}${column -  1}`));
-      }
-      if (row > 0 && column < this.state.columns - 1) {
-        moves.push(this.state.boxes.get(`${row - 1}${column + 1}`));
-      }
+    if (row > 0 && column > 0) {
+      moves.push(this.state.boxes.get(`${row - 1}${column -  1}`));
     }
-    if (player.state.id === 0 || isKing) {
+    if (row > 0 && column < this.state.columns - 1) {
+      moves.push(this.state.boxes.get(`${row - 1}${column + 1}`));
+    }
+
+    if (isKing) {
       if (row < this.state.rows - 1 && column > 0) {
         moves.push(this.state.boxes.get(`${row + 1}${column - 1}`));
       }
@@ -206,7 +205,6 @@ export class Board {
 
   getAvailableMove(box: Box): Move {
     const idx = this.state.availableMoves.findIndex((move: Move) => {
-      // FIXME: does this check object equality
       return move.end.state.position.cell === box.state.position.cell;
     });
     return this.state.availableMoves[idx];
