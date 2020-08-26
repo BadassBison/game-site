@@ -3,12 +3,13 @@
   "version": "0.0.0",
   "scripts": {
     "postinstall": "ngcc",
+    "clean": "rimraf docs",
     "ng": "ng",
     "start": "ng serve",
     "start:open": "ng serve --open",
     "start:4201": "npm start -- --port=4201",
     "build": "ng build",
-    "build:production": "ng build --prod --baseHref=\"https://badassbison.github.io/game-site/\"",
+    "build:production": "npm run clean && ng build --prod --baseHref=\"https://badassbison.github.io/game-site/\"",
     "build:stats": "ng build --stats-json && webpack-bundle-analyzer dist/game-site/stats-es2015.json",
     "test": "ng test --watch=false",
     "lint": "ng lint",
@@ -28,6 +29,7 @@
     "@angular/platform-browser-dynamic": "~10.0.12",
     "@angular/router": "~10.0.12",
     "@ngxs/store": "^3.6.2",
+    "rimraf": "^3.0.2",
     "rxjs": "~6.6.2",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.2"
