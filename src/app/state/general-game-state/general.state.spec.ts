@@ -17,13 +17,4 @@ describe('GeneralGameState', () => {
     });
   }));
 
-  describe('setCanvas', () => {
-    const canvas: HTMLCanvasElement = document.createElement('canvas');
-    store.reset({ canvas });
-  });
-
-  describe('setCtx', () => {
-
-  });
-
 });

@@ -272,10 +272,8 @@ export class Board {
     }
   }
 
-  checkIfKinged(player: number, row: number, checker: Checker) {
-    if (player === 0 && row === this.state.rows - 1) {
-      checker.makeKing();
-    } else if (player === 1 && row === 0) {
+  checkIfKinged(row: number, checker: Checker) {
+    if (row === 0) {
       checker.makeKing();
     }
   }
