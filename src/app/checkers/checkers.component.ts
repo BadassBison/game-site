@@ -200,7 +200,7 @@ export class CheckersComponent implements OnInit, AfterViewInit {
     } else {
 
       if (!this.checkerHeld.state.isKing) {
-        this.board.checkIfKinged(player, row, this.checkerHeld);
+        this.board.checkIfKinged(row, this.checkerHeld);
       }
 
       const isWin = this.board.checkForWin(this.currentPlayer.state.id);

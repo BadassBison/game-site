@@ -11,6 +11,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HomeComponent implements OnInit {
 
+  githubRepo = 'https://github.com/BadassBison/game-site';
+
   constructor() { }
 
   ngOnInit(): void {
