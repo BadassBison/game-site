@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "SchematicsNewGame",
+  "title": "New Game Schema",
+  "type": "object",
+  "properties": {
+    "name": {
+      "description": "The name of the game.",
+      "type": "string",
+      "$default": {
+        "$source": "argv",
+        "index": 0
+      },
+      "x-prompt": "What name would you like to use for the game?"
+    },
+    "path": {
+      "type": "string",
+      "format": "path",
+      "description": "The path to create the game.",
+      "visible": false
+    },
+    "project": {
+      "type": "string",
+      "description": "The name of the project.",
+      "$default": {
+        "$source": "projectName"
+      }
+    }
+   },
+  "required": [
+    "name"
+  ]
+}

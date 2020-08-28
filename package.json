@@ -1,20 +1,28 @@
 {
   "name": "game-site",
   "version": "0.0.0",
+  "schematics": "./dist/schematics/collection.json",
   "scripts": {
     "postinstall": "ngcc",
-    "clean": "rimraf docs",
     "ng": "ng",
     "start": "ng serve",
     "start:open": "ng serve --open",
     "start:4201": "npm start -- --port=4201",
-    "build": "ng build",
-    "build:production": "npm run clean && ng build --prod --baseHref=https://badassbison.github.io/game-site/",
+    "build": "ng build && npm run build:schematics",
+    "build:production": "npm run clean:docs && ng build --prod --baseHref https://badassbison.github.io/game-site/ --output-path ./docs",
+    "build:schematics": "tsc -p tsconfig.schematics.json && npm run postbuild",
     "build:stats": "ng build --stats-json && webpack-bundle-analyzer dist/game-site/stats-es2015.json",
+    "clean:deps": "rimraf node_modules",
+    "clean:dist": "rimraf dist",
+    "clean:docs": "rimraf docs",
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "copy:schemas": "cp schematics/*/schema.json ./dist/schematics/game/",
+    "copy:files": "cp -pR schematics/*/files/** ./dist/schematics/game/",
+    "copy:collection": "cp schematics/collection.json ./dist/schematics/collection.json",
+    "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
   },
   "private": true,
   "dependencies": {
@@ -36,6 +44,8 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.1000.7",
+    "@angular-devkit/core": "^10.0.8",
+    "@angular-devkit/schematics": "^10.0.8",
     "@angular/cli": "~10.0.7",
     "@angular/compiler-cli": "~10.0.12",
     "@ngxs/devtools-plugin": "^3.6.2",
