@@ -17,11 +17,10 @@ export interface Location {
 export function parseName(path: string, name: string): Location {
   const nameWithoutPath = basename(normalize(name));
   const gamePath = dirname(join(normalize(path), '/games/', name) as Path);
-  const rootPath = dirname(normalize(path));
 
   return {
     name: nameWithoutPath,
     path: normalize(`/${gamePath}`),
-    rootPath: normalize(`/${rootPath}`)
+    rootPath: normalize(`/${path}`)
   };
 }

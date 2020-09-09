@@ -68,6 +68,7 @@ export function game(_options: NewGameOptions): Rule {
       move(parsedPath.rootPath)
     ]);
 
+    tree.delete('src/app/app-routing.module.ts');
     tree.delete('src/app/app.component.html');
 
     return chain([

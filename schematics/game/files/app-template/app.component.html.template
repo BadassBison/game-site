@@ -14,7 +14,6 @@
         <mat-icon>home</mat-icon>
         <span>Home</span>
       </a>
-
       <% for (let game of games) { %>
       <a mat-menu-item routerLink='/<%= dasherize(game) %>'>
         <mat-icon>fiber_manual_record</mat-icon>

@@ -1,0 +1,42 @@
+import { NgModule } from '@angular/core';
+import { Route, Routes, RouterModule } from '@angular/router';
+
+const defaultRoute = 'home';
+const home: Route = {
+  path: defaultRoute,
+  loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
+};
+<% for (let game of games) { %>
+const checkers: Route = {
+  path: '<%= dasherize(game) %>',
+  loadChildren: () => import('./games/<%= dasherize(game) %>/<%= dasherize(game) %>.module').then(m => m.<%= classify(game) %>Module)
+};
+<% } %>
+const redirectToHome: Route = {
+  path: '',
+  redirectTo: defaultRoute,
+  pathMatch: 'full'
+};
+const catchAll: Route = {
+  path: '**',
+  redirectTo: defaultRoute,
+  pathMatch: 'full'
+};
+
+const routes: Routes = [
+  {
+    path: '',
+    children: [
+      home,
+      <%= ...games %>,
+      redirectToHome,
+      catchAll
+    ]
+  }
+];
+
+@NgModule({
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
+})
+export class AppRoutingModule { }
