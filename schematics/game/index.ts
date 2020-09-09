@@ -58,7 +58,7 @@ export function game(_options: NewGameOptions): Rule {
       }),
       move(parsedPath.path)
     ]);
-    const appTemplateSource = apply(url('./files/app.component.html.template'), [
+    const appTemplateSource = apply(url('./files/app-template'), [
       applyTemplates({
         classify: strings.classify,
         dasherize: strings.dasherize,
