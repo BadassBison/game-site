@@ -37,10 +37,9 @@ export function game(_options: NewGameOptions): Rule {
     const projectName = _options.project as string;
     const project = workspace.projects[projectName];
     const projectType = project.projectType === 'application' ? 'app' : 'lib';
+
     const games = tree.getDir('./src/app/games').subdirs.map(fragment => fragment.toString());
     games.push(_options.name);
-
-    console.log({ games });
 
     if (_options.path === undefined) {
       _options.path = `${project.sourceRoot}/${projectType}`;
@@ -62,6 +61,7 @@ export function game(_options: NewGameOptions): Rule {
       applyTemplates({
         classify: strings.classify,
         dasherize: strings.dasherize,
+        camelize: strings.camelize,
         name: _options.name,
         games
       }),

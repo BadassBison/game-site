@@ -10,6 +10,10 @@ const checkers: Route = {
   path: 'checkers',
   loadChildren: () => import('./games/checkers/checkers.module').then(m => m.CheckersModule)
 };
+const dots: Route = {
+  path: 'dots',
+  loadChildren: () => import('./games/dots/dots.module').then(m => m.DotsModule)
+};
 const redirectToHome: Route = {
   path: '',
   redirectTo: defaultRoute,
@@ -27,6 +31,7 @@ const routes: Routes = [
     children: [
       home,
       checkers,
+      dots,
       redirectToHome,
       catchAll
     ]
