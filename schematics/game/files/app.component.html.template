@@ -14,10 +14,13 @@
         <mat-icon>home</mat-icon>
         <span>Home</span>
       </a>
-      <a mat-menu-item routerLink='/checkers'>
+
+      <% for (let game of games) { %>
+      <a mat-menu-item routerLink='/<%= dasherize(game) %>'>
         <mat-icon>fiber_manual_record</mat-icon>
-        <span>Checkers</span>
+        <span><%= classify(game) %></span>
       </a>
+      <% } %>
     </mat-menu>
 
   </mat-toolbar>

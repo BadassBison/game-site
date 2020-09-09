@@ -13,16 +13,16 @@ import {
 
 import {
   strings,
-  normalize,
   experimental
 } from '@angular-devkit/core';
 
+import { parseName } from '../utility/parse-name';
 import { Schema as NewGameOptions } from './schema';
 
 export function game(_options: NewGameOptions): Rule {
   return (tree: Tree, _context: SchematicContext) => {
 
-    const workspaceConfig = tree.read('/angular.json');
+    const workspaceConfig = tree.read('./angular.json');
     if (!workspaceConfig) {
       throw new SchematicsException('Could not find Angular workspace configuration');
     }
@@ -37,24 +37,42 @@ export function game(_options: NewGameOptions): Rule {
     const projectName = _options.project as string;
     const project = workspace.projects[projectName];
     const projectType = project.projectType === 'application' ? 'app' : 'lib';
+    const games = tree.getDir('./src/app/games').subdirs.map(fragment => fragment.toString());
+    games.push(_options.name);
+
+    console.log({ games });
 
     if (_options.path === undefined) {
       _options.path = `${project.sourceRoot}/${projectType}`;
     }
 
-    console.log(url('./'));
+    const parsedPath = parseName(_options.path, _options.name);
+    _options.name = parsedPath.name;
+    _options.path = parsedPath.path;
 
-    const templateSource = apply(url('./game/files'), [
+    const gameTemplateSource = apply(url('./files/game-template'), [
       applyTemplates({
         classify: strings.classify,
         dasherize: strings.dasherize,
         name: _options.name
       }),
-      move(normalize(_options.path as string))
+      move(parsedPath.path)
+    ]);
+    const appTemplateSource = apply(url('./files/app.component.html.template'), [
+      applyTemplates({
+        classify: strings.classify,
+        dasherize: strings.dasherize,
+        name: _options.name,
+        games
+      }),
+      move(parsedPath.rootPath)
     ]);
 
+    tree.delete('src/app/app.component.html');
+
     return chain([
-      mergeWith(templateSource)
+      mergeWith(gameTemplateSource),
+      mergeWith(appTemplateSource)
     ]);
   };
 }

@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { StateModule } from './state/state.module';
+import { SharedModule } from './shared/shared.module';
 
 // Material
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
-import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatRippleModule } from '@angular/material/core';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,9 +23,9 @@ import { UtilitiesService } from './shared/utilities/utilities.service';
     BrowserModule,
     BrowserAnimationsModule,
     StateModule,
+    SharedModule,
     AppRoutingModule,
     MatButtonModule,
-    MatIconModule,
     MatListModule,
     MatMenuModule,
     MatRippleModule,

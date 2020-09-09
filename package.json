@@ -18,9 +18,10 @@
     "test": "ng test --watch=false",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
+    "new:game": "ng generate .:game",
     "e2e": "ng e2e",
     "copy:schemas": "cp schematics/*/schema.json ./dist/schematics/game/",
-    "copy:files": "cp -pR schematics/*/files/** ./dist/schematics/game/",
+    "copy:files": "cp -pR schematics/*/files/ ./dist/schematics/game/files",
     "copy:collection": "cp schematics/collection.json ./dist/schematics/collection.json",
     "postbuild": "npm run copy:schemas && npm run copy:files && npm run copy:collection"
   },

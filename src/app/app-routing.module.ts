@@ -8,7 +8,7 @@ const home: Route = {
 };
 const checkers: Route = {
   path: 'checkers',
-  loadChildren: () => import('./checkers/checkers.module').then(m => m.CheckersModule)
+  loadChildren: () => import('./games/checkers/checkers.module').then(m => m.CheckersModule)
 };
 const redirectToHome: Route = {
   path: '',

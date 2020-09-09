@@ -1,12 +1,12 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { Board } from './objects/board';
-import { Player } from '../shared/player/player';
+import { Player } from '../../shared/player/player';
 import { Checker } from './objects/checker';
 import { Box } from './objects/box';
 import { Move } from './interfaces/move';
-import { Point } from '../shared/interfaces/point';
+import { Point } from '../../shared/interfaces/point';
 import { trigger, state, style, transition, animate } from '@angular/animations';
-import { IPosition } from '../shared/interfaces/position';
+import { IPosition } from '../../shared/interfaces/position';
 
 @Component({
   selector: 'app-checkers',
