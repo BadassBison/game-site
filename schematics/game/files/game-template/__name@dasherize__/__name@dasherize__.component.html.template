@@ -1,0 +1,5 @@
+<canvas
+  #<%= dasherize(name) %>
+  class="canvas"
+  (click)="handleClick($event)">
+</canvas>

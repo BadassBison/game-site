@@ -1,0 +1,10 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "game": {
+      "description": "To build the foundation for new games",
+      "factory": "./game/index#game",
+      "schema": "./game/schema.json"
+    }
+  }
+}

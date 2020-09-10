@@ -5,15 +5,11 @@ const defaultRoute = 'home';
 const home: Route = {
   path: defaultRoute,
   loadChildren: () => import('./home/home.module').then(m => m.HomeModule)
-};
-const checkers: Route = {
-  path: 'checkers',
-  loadChildren: () => import('./games/checkers/checkers.module').then(m => m.CheckersModule)
-};
-const dots: Route = {
-  path: 'dots',
-  loadChildren: () => import('./games/dots/dots.module').then(m => m.DotsModule)
-};
+};<% for (let game of games) { %>
+const <%= camelize(game) %>: Route = {
+  path: '<%= dasherize(game) %>',
+  loadChildren: () => import('./games/<%= dasherize(game) %>/<%= dasherize(game) %>.module').then(m => m.<%= classify(game) %>Module)
+};<% } %>
 const redirectToHome: Route = {
   path: '',
   redirectTo: defaultRoute,
@@ -29,9 +25,8 @@ const routes: Routes = [
   {
     path: '',
     children: [
-      home,
-      checkers,
-      dots,
+      home,<% for (let game of games) { %>
+      <%= camelize(game) %>,<% } %>
       redirectToHome,
       catchAll
     ]
