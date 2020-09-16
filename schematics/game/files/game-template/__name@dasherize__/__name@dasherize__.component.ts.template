@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
 
 @Component({
   selector: 'app-<%= dasherize(name) %>',
@@ -7,10 +7,22 @@ import { Component, OnInit } from '@angular/core';
 })
 export class <%= classify(name) %>Component implements OnInit {
 
+  @ViewChild('<%= dasherize(name) %>', { static: true })
+  canvas: ElementRef<HTMLCanvasElement>;
+
+  private ctx: CanvasRenderingContext2D;
+
   constructor() { }
 
   ngOnInit() {
+    console.log('ngOnInit');
+  }
 
+  ngAfterViewInit() {
+    console.log('ngAfterViewInit');
+    this.ctx = this.canvas.nativeElement.getContext('2d');
+    this.canvas.nativeElement.width = innerWidth;
+    this.canvas.nativeElement.height = innerHeight;
   }
 
   handleClick(evt: MouseEvent): void {
