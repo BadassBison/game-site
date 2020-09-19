@@ -1,12 +1,12 @@
-import { PlayerState } from './playerState';
+import { PlayerState } from '../interfaces/playerState';
 
 export class Player {
   state: PlayerState;
 
-  static playerBuilder(order: number, color: string): Player {
+  static playerBuilder(order: number, color: string, name?: string): Player {
     const state: PlayerState = {
       id: order - 1,
-      name: `Player ${order}`,
+      name: name ? name : `Player ${order}`,
       color,
       numberOfPieces: 16
     };

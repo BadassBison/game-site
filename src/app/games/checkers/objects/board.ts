@@ -1,7 +1,7 @@
 import { BoardState } from '../interfaces/board-state';
 import { Box } from './box';
 import { Move } from '../interfaces/move';
-import { Player } from 'src/app/shared/player/player';
+import { Player } from './player';
 import { Cell } from 'src/app/shared/interfaces/cell';
 import { Point } from 'src/app/shared/interfaces/point';
 import { IPosition } from 'src/app/shared/interfaces/position';

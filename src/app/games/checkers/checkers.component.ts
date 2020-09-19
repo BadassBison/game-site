@@ -1,6 +1,6 @@
 import { Component, ElementRef, ViewChild, AfterViewInit, OnInit } from '@angular/core';
 import { Board } from './objects/board';
-import { Player } from '../../shared/player/player';
+import { Player } from './objects/player';
 import { Checker } from './objects/checker';
 import { Box } from './objects/box';
 import { Move } from './interfaces/move';

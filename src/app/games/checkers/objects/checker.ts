@@ -1,5 +1,5 @@
 import { CheckerState } from '../interfaces/checker-state';
-import { Player } from 'src/app/shared/player/player';
+import { Player } from './player';
 import { IPosition } from 'src/app/shared/interfaces/position';
 import { Point } from 'src/app/shared/interfaces/point';
 

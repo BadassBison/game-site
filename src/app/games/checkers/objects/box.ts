@@ -1,6 +1,6 @@
 import { BoxState } from '../interfaces/box-state';
 import { Checker } from './checker';
-import { Player } from 'src/app/shared/player/player';
+import { Player } from './player';
 import { IPosition } from 'src/app/shared/interfaces/position';
 import { UtilitiesService } from 'src/app/shared/utilities/utilities.service';
 
