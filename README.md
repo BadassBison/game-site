@@ -6,7 +6,7 @@ This site will be a progession through learning and understanding the inner work
 
 ## Contribute Your Own Game
 
-Build the game template using `npm run new:game`. This will use custom schematics to build out the game template in the correct location, update the routing for your game, and add your game to the links in the main menu. Only update code within the folder of the game you are adding. Make sure your game is fully finished for frontend play before raising a PR. Your game should have it's own Readme with clear discription of both the game, the rules, and the code the built it.
+Build the game template using `npm run new:game`. This will use custom schematics to build out the game template in the correct location, update the routing for your game, and add your game to the links in the main menu. Only update code within the folder of the game you are adding. Make sure your game is fully finished for frontend play before raising a PR. Your game should have it's own Readme with clear discription of both the game, the rules, and the code that built it.
 
 ## Other Contributions
 
@@ -24,7 +24,7 @@ All source code will go in the `src` folder. Custom schematics build the game pr
 
 ### docs
 
-This is the compiled code that Github uses to host the site.
+This is the compiled code that Github Pages uses to host the site.
 
 ### schematics
 
