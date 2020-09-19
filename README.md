@@ -2,7 +2,7 @@
 
 This site will be a progession through learning and understanding the inner workings of Angular, frontend development, complex algorithms, schematics, DevOps, and more. I am always looking for better ways to code games in an Angular environment, so feel free to push your own game.
 
-[Live site](site)
+[Live site](https://badassbison.github.io/game-site/)
 
 ## Contribute Your Own Game
 
@@ -47,5 +47,3 @@ Deletes all branches outside of master
 ### clean:deps
 
 Deletes the node_modules folder and all its contents
-
-[site]: https://badassbison.github.io/game-site/
