@@ -4,18 +4,13 @@ import { HomeRoutingModule } from './home-routing.module';
 
 import { HomeComponent } from './home.component';
 
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-
 @NgModule({
   declarations: [
     HomeComponent
   ],
   imports: [
     SharedModule,
-    HomeRoutingModule,
-    MatButtonModule,
-    MatCardModule
+    HomeRoutingModule
   ],
   exports: [
     HomeComponent

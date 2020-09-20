@@ -1,5 +1,78 @@
-<canvas
-  #dots
-  class="canvas"
-  (click)="handleClick($event)">
-</canvas>
+<div *ngIf="!gameStarted; else playing" class="start-screen">
+  <mat-card class="card">
+    <mat-card-header>
+      <mat-card-title>Dots</mat-card-title>
+    </mat-card-header>
+    <mat-card-content *ngIf="!showingInformation; else information">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Number of Rows</mat-label>
+        <input matInput [(ngModel)]="rows" placeholder="Rows">
+        <mat-icon matSuffix>scatter_plot</mat-icon>
+      </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Number of Columns</mat-label>
+        <input matInput [(ngModel)]="columns" placeholder="Columns">
+        <mat-icon matSuffix>scatter_plot</mat-icon>
+      </mat-form-field>
+
+      <mat-card>
+        <mat-form-field appearance="outline">
+          <mat-label>Player 1 Name</mat-label>
+          <input matInput [(ngModel)]="playerOneName" placeholder="Enter Name">
+          <mat-icon matSuffix>face</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Color</mat-label>
+          <mat-select [(value)]="playerOneColor">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let color of colors" [value]="color">{{ color }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card>
+
+      <mat-card>
+        <mat-form-field appearance="outline">
+          <mat-label>Player 2 Name</mat-label>
+          <input matInput [(ngModel)]="playerTwoName" placeholder="Enter Name">
+          <mat-icon matSuffix>face</mat-icon>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Color</mat-label>
+          <mat-select [(value)]="playerTwoColor">
+            <mat-option>None</mat-option>
+            <mat-option *ngFor="let color of colors" [value]="color">{{ color }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card>
+
+    </mat-card-content>
+
+    <ng-template #information>
+      <mat-card-content>
+        <h3>Information</h3>
+        <ul>
+          <li>Connect dots to make squares</li>
+          <li>Making Squares gives you an extra turn</li>
+          <li>Person who makes the most squares wins</li>
+          <li>Press 'm' for the menu</li>
+        </ul>
+      </mat-card-content>
+    </ng-template>
+
+    <mat-card-actions>
+      <button mat-button (click)="startGame()">PLAY</button>
+      <button mat-button (click)="toggleInformation()">INSTRUCTIONS</button>
+      <button mat-button *ngIf="gameInitialized" (click)="continueGame()">CONTINUE</button>
+    </mat-card-actions>
+  </mat-card>
+
+</div>
+
+<ng-template #playing>
+  <canvas
+    #dots
+    class="canvas"
+    (click)="handleClick($event)">
+  </canvas>
+</ng-template>
