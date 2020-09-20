@@ -20,7 +20,9 @@ export class Board {
         const y = row * rowSpacing + topPadding;
 
         const dot = Dot.dotBuilder(x, y, column, row);
-        dots.set(`${column}${row}`, dot);
+
+        if (column <= 9) {  }
+        dots.set(`${Board.parseIdx(column)}${Board.parseIdx(row)}`, dot);
       }
     }
 
@@ -46,6 +48,14 @@ export class Board {
     return new Board(state);
   }
 
+  static parseIdx(idx: number): string {
+    if (idx <= 9) {
+      return `0${idx}`;
+    } else {
+      return `${idx}`;
+    }
+  }
+
   constructor(state: BoardState) {
     this.state = state;
   }
@@ -57,11 +67,6 @@ export class Board {
     } else {
       this.startingMove(evt);
     }
-
-    // this.fillSquares();
-
-    // if (this.totalSquaresLeft === 0) this.finishGame();
-    // this.drawPlayerBox();
   }
 
   startingMove(evt: MouseEvent): void {
@@ -96,7 +101,7 @@ export class Board {
     const xIdx = Math.floor(clientX / (this.state.width / this.state.columns));
     const yIdx = Math.floor(clientY / (this.state.height / this.state.rows));
 
-    const closestDot = this.state.dots.get(`${xIdx}${yIdx}`);
+    const closestDot = this.state.dots.get(`${Board.parseIdx(xIdx)}${Board.parseIdx(yIdx)}`);
 
     if (this.state.startingDot) {
 
@@ -145,22 +150,22 @@ export class Board {
 
     let north: Dot;
     if (!connections.north && row > 0) {
-      north = this.state.dots.get(`${column}${row - 1}`);
+      north = this.state.dots.get(`${Board.parseIdx(column)}${Board.parseIdx(row - 1)}`);
     }
 
     let east: Dot;
     if (!connections.east  && column < this.state.columns - 1) {
-      east = this.state.dots.get(`${column + 1}${row}`);
+      east = this.state.dots.get(`${Board.parseIdx(column + 1)}${Board.parseIdx(row)}`);
     }
 
     let south: Dot;
     if (!connections.south && row < this.state.rows - 1) {
-      south = this.state.dots.get(`${column}${row + 1}`);
+      south = this.state.dots.get(`${Board.parseIdx(column)}${Board.parseIdx(row + 1)}`);
     }
 
     let west: Dot;
     if (!connections.west && column > 0) {
-      west = this.state.dots.get(`${column - 1}${row}`);
+      west = this.state.dots.get(`${Board.parseIdx(column - 1)}${Board.parseIdx(row)}`);
     }
 
     this.state.currentNeighbors = { north, east, south, west };
