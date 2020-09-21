@@ -1,16 +1,14 @@
-import { Component, ViewChild, ElementRef, AfterViewChecked, HostListener } from '@angular/core';
-import { Board } from './objects/board';
-import { Player } from './objects/player';
+import { Component, ElementRef, ViewChild, AfterViewChecked, HostListener } from '@angular/core';
 import { Drawer } from './objects/drawer';
 
 @Component({
-  selector: 'app-dots',
-  templateUrl: './dots.component.html',
-  styleUrls: ['./dots.component.scss'],
+  selector: 'app-tic-tac-toe',
+  templateUrl: './tic-tac-toe.component.html',
+  styleUrls: ['./tic-tac-toe.component.scss'],
 })
-export class DotsComponent implements AfterViewChecked {
+export class TicTacToeComponent implements AfterViewChecked {
 
-  @ViewChild('dots', { static: false })
+  @ViewChild('ticTacToe', { static: false })
   canvas: ElementRef<HTMLCanvasElement>;
 
   gameStarted = false;
@@ -18,10 +16,8 @@ export class DotsComponent implements AfterViewChecked {
   gameContinued = false;
   showingInformation = false;
 
-  board: Board;
   drawer: Drawer;
-  rows: number;
-  columns: number;
+
   playerOneName: string;
   playerOneColor: string;
   playerTwoName: string;
@@ -30,6 +26,8 @@ export class DotsComponent implements AfterViewChecked {
 
   @HostListener('window:keydown', ['$event.key'])
   onKeypress(btn: string) {
+    console.log({ btn });
+
     if (btn === 'm') {
       this.gameStarted = false;
     }
@@ -61,49 +59,25 @@ export class DotsComponent implements AfterViewChecked {
 
   initializeGame() {
     this.setCanvasDimensions();
-    this.board = Board.boardBuilder(
-      this.rows > 3 ? this.rows : 6,
-      this.columns > 3 ? this.columns : 6,
-      this.canvas.nativeElement.width,
-      this.canvas.nativeElement.height,
-      this.buildPlayers()
-    );
-
     this.drawer = new Drawer(this.canvas.nativeElement);
-    this.drawer.draw(this.board, true);
+    this.drawer.draw();
     this.gameInitialized = true;
   }
 
   reinitializeGame() {
     this.setCanvasDimensions();
     this.drawer.setCanvas(this.canvas.nativeElement);
-    this.drawer.draw(this.board, true);
+    this.drawer.draw();
     this.gameContinued = false;
   }
 
   handleClick(evt: MouseEvent): void {
-    this.board.handleClick(evt);
-    if (this.board.state.startingDot) {
-      this.drawer.draw(this.board, false);
-    } else {
-      this.drawer.draw(this.board, true);
-    }
-  }
-
-  finishGame() {
-    // TODO: Add UI for the game over screen
-    console.log('Game is over');
+    console.log({ evt });
   }
 
   private setCanvasDimensions(): void {
     this.canvas.nativeElement.width = innerWidth;
     this.canvas.nativeElement.height = innerHeight - 40;
-  }
-
-  private buildPlayers(): Player[] {
-    const playerOne: Player = Player.playerBuilder(1, this.playerOneColor || 'blue', this.playerOneName);
-    const playerTwo: Player = Player.playerBuilder(2, this.playerTwoColor || 'red', this.playerTwoName);
-    return [playerOne, playerTwo];
   }
 
 }

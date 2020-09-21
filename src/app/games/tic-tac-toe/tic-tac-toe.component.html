@@ -1,7 +1,7 @@
 <div *ngIf="!gameStarted; else playing" class="start-screen">
   <mat-card class="card">
     <mat-card-header>
-      <mat-card-title><%= classify(name) %></mat-card-title>
+      <mat-card-title>TicTacToe</mat-card-title>
     </mat-card-header>
     <mat-card-content *ngIf="!showingInformation; else information">
 
@@ -56,7 +56,7 @@
 
 <ng-template #playing>
   <canvas
-    #<%= camelize(name) %>
+    #ticTacToe
     class="canvas"
     (click)="handleClick($event)">
   </canvas>

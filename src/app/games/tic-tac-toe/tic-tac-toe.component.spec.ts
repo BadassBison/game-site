@@ -1,22 +1,22 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SharedModule } from '../../shared/shared.module';
-import { <%= classify(name) %>Component } from './<%= dasherize(name) %>.component';
+import { TicTacToeComponent } from './tic-tac-toe.component';
 
-describe('<%= classify(name) %>Component', () => {
-  let component: <%= classify(name) %>Component;
-  let fixture: ComponentFixture<<%= classify(name) %>Component>;
+describe('TicTacToeComponent', () => {
+  let component: TicTacToeComponent;
+  let fixture: ComponentFixture<TicTacToeComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ <%= classify(name) %>Component ],
+      declarations: [ TicTacToeComponent ],
       imports: [ SharedModule ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(<%= classify(name) %>Component);
+    fixture = TestBed.createComponent(TicTacToeComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -14,6 +14,10 @@ const dots: Route = {
   path: 'dots',
   loadChildren: () => import('./games/dots/dots.module').then(m => m.DotsModule)
 };
+const ticTacToe: Route = {
+  path: 'tic-tac-toe',
+  loadChildren: () => import('./games/tic-tac-toe/tic-tac-toe.module').then(m => m.TicTacToeModule)
+};
 const redirectToHome: Route = {
   path: '',
   redirectTo: defaultRoute,
@@ -32,6 +36,7 @@ const routes: Routes = [
       home,
       checkers,
       dots,
+      ticTacToe,
       redirectToHome,
       catchAll
     ]

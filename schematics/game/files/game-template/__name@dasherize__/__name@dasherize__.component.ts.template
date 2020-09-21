@@ -1,32 +1,83 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewChecked, HostListener } from '@angular/core';
+import { Drawer } from './objects/drawer';
 
 @Component({
   selector: 'app-<%= dasherize(name) %>',
   templateUrl: './<%= dasherize(name) %>.component.html',
   styleUrls: ['./<%= dasherize(name) %>.component.scss'],
 })
-export class <%= classify(name) %>Component implements OnInit {
+export class <%= classify(name) %>Component implements AfterViewChecked {
 
-  @ViewChild('<%= dasherize(name) %>', { static: true })
+  @ViewChild('<%= camelize(name) %>', { static: false })
   canvas: ElementRef<HTMLCanvasElement>;
 
-  private ctx: CanvasRenderingContext2D;
+  gameStarted = false;
+  gameInitialized = false;
+  gameContinued = false;
+  showingInformation = false;
 
-  constructor() { }
+  drawer: Drawer;
 
-  ngOnInit() {
-    console.log('ngOnInit');
+  playerOneName: string;
+  playerOneColor: string;
+  playerTwoName: string;
+  playerTwoColor: string;
+  colors: string[] = ['red', 'blue', 'green', 'purple', 'orange'];
+
+  @HostListener('window:keydown', ['$event.key'])
+  onKeypress(btn: string) {
+    console.log({ btn });
+
+    if (btn === 'm') {
+      this.gameStarted = false;
+    }
   }
 
-  ngAfterViewInit() {
-    console.log('ngAfterViewInit');
-    this.ctx = this.canvas.nativeElement.getContext('2d');
-    this.canvas.nativeElement.width = innerWidth;
-    this.canvas.nativeElement.height = innerHeight;
+  ngAfterViewChecked() {
+    if (this.gameStarted) {
+      if (!this.gameInitialized) {
+        this.initializeGame();
+      } else if (this.gameContinued) {
+        this.reinitializeGame();
+      }
+    }
+  }
+
+  startGame() {
+    this.gameStarted = true;
+    this.gameInitialized = false;
+  }
+
+  continueGame() {
+    this.gameStarted = true;
+    this.gameContinued = true;
+  }
+
+  toggleInformation() {
+    this.showingInformation = !this.showingInformation;
+  }
+
+  initializeGame() {
+    this.setCanvasDimensions();
+    this.drawer = new Drawer(this.canvas.nativeElement);
+    this.drawer.draw();
+    this.gameInitialized = true;
+  }
+
+  reinitializeGame() {
+    this.setCanvasDimensions();
+    this.drawer.setCanvas(this.canvas.nativeElement);
+    this.drawer.draw();
+    this.gameContinued = false;
   }
 
   handleClick(evt: MouseEvent): void {
     console.log({ evt });
+  }
+
+  private setCanvasDimensions(): void {
+    this.canvas.nativeElement.width = innerWidth;
+    this.canvas.nativeElement.height = innerHeight - 40;
   }
 
 }

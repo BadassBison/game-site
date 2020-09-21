@@ -53,6 +53,7 @@ export function game(_options: NewGameOptions): Rule {
       applyTemplates({
         classify: strings.classify,
         dasherize: strings.dasherize,
+        camelize: strings.camelize,
         name: _options.name
       }),
       move(parsedPath.path)
